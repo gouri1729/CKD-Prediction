@@ -19,23 +19,82 @@ cat_cols= df.select_dtypes(include=['object']).columns
 
 # print(cat_cols)
 
-#categorical to numerical conversion
-from sklearn.preprocessing import LabelEncoder
+# #categorical to numerical conversion
+# from sklearn.preprocessing import LabelEncoder
 
-# Encode feature categorical columns (excluding Target)
-feature_cat_cols = [col for col in cat_cols if col != 'Target']
+# # Encode feature categorical columns (excluding Target)
+# feature_cat_cols = [col for col in cat_cols if col != 'Target']
 
-le = LabelEncoder()
-for col in feature_cat_cols:
-    df[col] = le.fit_transform(df[col])
+# le = LabelEncoder()
+# for col in feature_cat_cols:
+#     df[col] = le.fit_transform(df[col])
 
-# Encode Target separately
-target_encoder = LabelEncoder()
-df['Target'] = target_encoder.fit_transform(df['Target'])
+# # Encode Target separately
+# target_encoder = LabelEncoder()
+# df['Target'] = target_encoder.fit_transform(df['Target'])
 
-print("Target class mapping:", target_encoder.classes_)
+# print("Target class mapping:", target_encoder.classes_)
 
-# print(df.dtypes)
+# # print(df.dtypes)
+
+ordinal_mappings = {
+    'Appetite (good/poor)': {
+        'poor': 0,
+        'good': 1
+    },
+    'Physical activity level': {
+        'low': 0,
+        'moderate': 1,
+        'high': 2
+    },
+    'Target': {
+        'No Disease': 0,
+        'Low Risk': 1,
+        'Moderate Risk': 2,
+        'High Risk': 3,
+        'Severe Disease': 4
+    }
+}
+
+for col, mapping in ordinal_mappings.items():
+    df[col] = df[col].map(mapping)
+
+binary_cols = {
+    'Red blood cells in urine': {'normal': 0, 'abnormal': 1},
+    'Pus cells in urine': {'normal': 0, 'abnormal': 1},
+    'Pus cell clumps in urine': {'not present': 0, 'present': 1},
+    'Bacteria in urine': {'not present': 0, 'present': 1},
+    'Hypertension (yes/no)': {'no': 0, 'yes': 1},
+    'Diabetes mellitus (yes/no)': {'no': 0, 'yes': 1},
+    'Coronary artery disease (yes/no)': {'no': 0, 'yes': 1},
+    'Pedal edema (yes/no)': {'no': 0, 'yes': 1},
+    'Anemia (yes/no)': {'no': 0, 'yes': 1},
+    'Family history of chronic kidney disease': {'no': 0, 'yes': 1},
+    'Urinary sediment microscopy results': {'normal': 0, 'abnormal': 1}
+}
+
+for col, mapping in binary_cols.items():
+    df[col] = df[col].map(mapping)
+
+nominal_cols = ['Smoking status']  # add more only if needed
+
+df = pd.get_dummies(df, columns=nominal_cols, drop_first=True)
+
+print("Final data types:")
+print(df.dtypes)
+
+print("\nAny missing values?")
+print(df.isnull().sum().sort_values(ascending=False))
+
+print("\nFinal dataset shape:", df.shape)
+print(df.head())
+
+
+
+
+
+
+
 
 # Dividing into training and testing sets
 X= df.drop ('Target',axis=1)
