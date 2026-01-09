@@ -145,18 +145,21 @@ print("Shape after RFE:", X_train_rfe.shape)
 from sklearn.decomposition import PCA
 
 # Reduce to 5 principal components
-pca = PCA(n_components=5)
+# pca = PCA(n_components=5)
 
-X_train_pca = pca.fit_transform(X_train_rfe)
-X_test_pca  = pca.transform(X_test_rfe)
+# X_train_pca = pca.fit_transform(X_train_rfe)
+# X_test_pca  = pca.transform(X_test_rfe)
 
-print("Shape after PCA:", X_train_pca.shape)
+# print("Shape after PCA:", X_train_pca.shape)
 
 # Train Model (Random Forest)
 model = RandomForestClassifier(n_estimators=300, random_state=42)
-model.fit(X_train_pca, y_train_smote)
+# model.fit(X_train_pca, y_train_smote)
 
-y_pred = model.predict(X_test_pca)
+# y_pred = model.predict(X_test_pca)
+model.fit(X_train_rfe, y_train_smote)
+y_pred = model.predict(X_test_rfe)
+
 
 # Evaluation
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -170,9 +173,9 @@ print(df['Target'].value_counts())
 from sklearn.svm import SVC
 
 svm_model = SVC(kernel='rbf', C=1, gamma='scale')
-svm_model.fit(X_train_pca, y_train_smote)
+svm_model.fit(X_train_rfe, y_train_smote)
 
-svm_pred = svm_model.predict(X_test_pca)
+svm_pred = svm_model.predict(X_test_rfe)
 
 print("\n========== SVM RESULTS ==========")
 print("Accuracy:", accuracy_score(y_test, svm_pred))
