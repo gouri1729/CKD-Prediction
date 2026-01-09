@@ -131,15 +131,15 @@ print("\nAfter SMOTE:\n", pd.Series(y_train_smote).value_counts())
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestClassifier
 
-rfe_estimator = RandomForestClassifier(n_estimators=100, random_state=42)
+# rfe_estimator = RandomForestClassifier(n_estimators=100, random_state=42)
 
 # Select top 10 features
-rfe = RFE(estimator=rfe_estimator, n_features_to_select=10)
+# rfe = RFE(estimator=rfe_estimator, n_features_to_select=10)
 
-X_train_rfe = rfe.fit_transform(X_train_smote, y_train_smote)
-X_test_rfe  = rfe.transform(X_test)
+# X_train_rfe = rfe.fit_transform(X_train_smote, y_train_smote)
+# X_test_rfe  = rfe.transform(X_test)
 
-print("Shape after RFE:", X_train_rfe.shape)
+print("Shape after RFE:", X_train_smote.shape)
 
 # PCA - Dimensionality Reduction
 from sklearn.decomposition import PCA
@@ -157,8 +157,8 @@ model = RandomForestClassifier(n_estimators=300, random_state=42)
 # model.fit(X_train_pca, y_train_smote)
 
 # y_pred = model.predict(X_test_pca)
-model.fit(X_train_rfe, y_train_smote)
-y_pred = model.predict(X_test_rfe)
+model.fit(X_train_smote, y_train_smote)
+y_pred = model.predict(X_test)
 
 
 # Evaluation
@@ -173,9 +173,9 @@ print(df['Target'].value_counts())
 from sklearn.svm import SVC
 
 svm_model = SVC(kernel='rbf', C=1, gamma='scale')
-svm_model.fit(X_train_rfe, y_train_smote)
+svm_model.fit(X_train_smote, y_train_smote)
 
-svm_pred = svm_model.predict(X_test_rfe)
+svm_pred = svm_model.predict(X_test)
 
 print("\n========== SVM RESULTS ==========")
 print("Accuracy:", accuracy_score(y_test, svm_pred))
