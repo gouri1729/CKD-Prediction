@@ -20,3 +20,9 @@ def tune_random_forest(model, X_train, y_train):
     grid.fit(X_train, y_train)
 
     return grid.best_estimator_, grid.best_params_
+
+from tuning import tune_random_forest
+
+best_model, best_params = tune_random_forest(model, X_train_smote, y_train_smote)
+print("Best Parameters:", best_params)
+best_model.fit(X_train_smote, y_train_smote)

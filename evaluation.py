@@ -7,6 +7,7 @@ import numpy as np
 def evaluate_model(model, X_test, y_test):
     y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)[:, 1]
+    # y_pred = (y_proba)>0.25.astype(int)
 
     report = classification_report(y_test, y_pred, output_dict=True)
     cm = confusion_matrix(y_test, y_pred)
@@ -19,7 +20,8 @@ def evaluate_model(model, X_test, y_test):
         "F1_CKD": report["1"]["f1-score"],
         "ROC_AUC": roc_auc
     }
-
+    print("Unique predictions:", set(y_pred))
+    print("True labels:", set(y_test))
     return results
 
 
