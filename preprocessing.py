@@ -74,10 +74,10 @@ def split_data(df, target_column): #splitting train-test data
     #validation set split from training data
     X_train, X_val, Y_train, Y_val = train_test_split(
     X_temp, Y_temp,
-    test_size=0.1,   # 0.25 of 80% = 20% total
+    test_size=0.125,   # 0.25 of 80% = 20% total
     stratify=Y_temp,
     random_state=42
     )
 
-    return X_train, X_test, Y_train, Y_test
+    return X_train, X_val, Y_train, Y_val
 
