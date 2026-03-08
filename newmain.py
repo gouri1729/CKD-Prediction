@@ -49,7 +49,7 @@ from models import *
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
-file="CKD_changedataset.xlsx"
+file="CKD_MODIFIED.xlsx"
 df = load_data(file)
 
 df = preprocess_data(df)
