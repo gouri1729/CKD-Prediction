@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CKD Result</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">🩺</span>
+  <div>
+    <h1>CKD Prediction Result</h1>
+    <p>Patient Risk Analysis</p>
+  </div>
+</header>
+
+<div class="wrapper">
+
+  <div class="result-card" id="resultBanner">
+    <div id="resultIcon"  class="result-icon"></div>
+    <div id="resultLabel" class="result-label"></div>
+    <div id="resultProb"  class="result-prob"></div>
+    <div id="resultRisk"  class="result-risk"></div>
+  </div>
+
+  <div class="section-card chart-wrap">
+    <h3>Risk Probability Gauge</h3>
+    <canvas id="gaugeChart" height="140"></canvas>
+  </div>
+
+  <!-- All class probabilities -->
+  <div class="section-card">
+    <h3>Class Probabilities</h3>
+    <div id="allProbabilities" class="prob-list"></div>
+  </div>
+
+  <div class="section-card">
+    <h3>Entered Values</h3>
+    <div id="valueSummary" class="summary-grid"></div>
+  </div>
+
+  <div class="btn-wrap">
+    <a href="home.html" class="predict-btn" style="text-decoration:none;display:inline-block">← New Prediction</a>
+  </div>
+
+</div>
+
+<script src="result.js"></script>
+</body>
+</html>

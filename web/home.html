@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CKD Prediction Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+
+<body>
+
+<header>
+  <span class="header-icon">🩺</span>
+  <div>
+    <h1>CKD Risk Predictor</h1>
+    <p>Enter the top 10 clinical indicators identified by RFE</p>
+  </div>
+</header>
+
+<div class="wrapper">
+  <form id="ckdForm" novalidate>
+
+    <!-- Patient Demographics -->
+    <div class="section-card">
+      <h2><span class="sec-icon">👤</span> Patient Demographics</h2>
+      <div class="grid">
+
+        <div class="field">
+          <label>Age <span class="unit">years</span></label>
+          <input type="number" id="age" step="1" min="0" max="120" placeholder="e.g. 45" required />
+          <span class="hint">Patient age in years</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Kidney Function -->
+    <div class="section-card">
+      <h2><span class="sec-icon">🫘</span> Kidney Function</h2>
+      <div class="grid">
+
+        <div class="field">
+          <label>Serum Creatinine <span class="unit">mg/dl</span></label>
+          <input type="number" id="serum_creatinine" step="0.1" min="0" placeholder="e.g. 1.2" required />
+          <span class="hint">Normal: 0.7 – 1.3</span>
+        </div>
+
+        <div class="field">
+          <label>Blood Urea <span class="unit">mg/dl</span></label>
+          <input type="number" id="blood_urea" step="1" min="0" placeholder="e.g. 28" required />
+          <span class="hint">Normal: 10 – 50</span>
+        </div>
+
+        <div class="field">
+          <label>eGFR <span class="unit">mL/min/1.73m²</span></label>
+          <input type="number" id="egfr" step="1" min="0" placeholder="e.g. 90" required />
+          <span class="hint">Normal: ≥ 90</span>
+        </div>
+
+        <div class="field">
+          <label>Urine Protein-Creatinine Ratio</label>
+          <input type="number" id="upcr" step="0.01" min="0" placeholder="e.g. 0.15" required />
+          <span class="hint">Normal: &lt; 0.2</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Vitals & Blood Work -->
+    <div class="section-card">
+      <h2><span class="sec-icon">💉</span> Vitals &amp; Blood Work</h2>
+      <div class="grid">
+
+        <div class="field">
+          <label>Blood Pressure <span class="unit">mm/Hg</span></label>
+          <input type="number" id="blood_pressure" step="1" min="0" placeholder="e.g. 120" required />
+          <span class="hint">Normal: &lt; 120</span>
+        </div>
+
+        <div class="field">
+          <label>Blood Glucose <span class="unit">mg/dl</span></label>
+          <input type="number" id="glucose" step="1" min="0" placeholder="e.g. 110" required />
+          <span class="hint">Fasting normal: 70 – 100</span>
+        </div>
+
+        <div class="field">
+          <label>Hemoglobin <span class="unit">gm/dl</span></label>
+          <input type="number" id="hemoglobin" step="0.1" min="0" placeholder="e.g. 13.5" required />
+          <span class="hint">Normal: 12 – 17</span>
+        </div>
+
+        <div class="field">
+          <label>Sodium <span class="unit">mEq/L</span></label>
+          <input type="number" id="sodium" step="1" min="0" placeholder="e.g. 138" required />
+          <span class="hint">Normal: 135 – 145</span>
+        </div>
+
+        <div class="field">
+          <label>Potassium <span class="unit">mEq/L</span></label>
+          <input type="number" id="potassium" step="0.1" min="0" placeholder="e.g. 4.2" required />
+          <span class="hint">Normal: 3.5 – 5.0</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="formError" class="form-error" style="display:none">
+      ⚠️ Please fill in all required fields.
+    </div>
+
+    <div class="btn-wrap">
+      <button type="submit" class="predict-btn" id="submitBtn">Predict CKD Risk</button>
+      <button type="reset" class="reset-btn">Reset</button>
+    </div>
+
+  </form>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+
