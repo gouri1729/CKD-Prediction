@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,6 +36,105 @@
   <div class="section-card">
     <h3>Class Probabilities</h3>
     <div id="allProbabilities" class="prob-list"></div>
+  </div>
+
+  <!-- LIME Explanations -->
+  <div class="section-card">
+    <h3>🔍 Model Explanation (LIME Analysis)</h3>
+    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
+      Understanding how each feature contributed to the prediction using Local Interpretable Model-agnostic Explanations
+    </p>
+    
+    <div id="limeLoading" class="lime-loading">
+      <div class="loader"></div>
+      <p>Generating AI explanations...</p>
+    </div>
+    
+    <div id="limeContent" style="display:none;">
+      <!-- Probability Chart -->
+      <div class="lime-plot-container">
+        <h4>Prediction Confidence Across Classes</h4>
+        <img id="limeProbabilityChart" class="lime-plot" alt="LIME Probability Chart" />
+      </div>
+      
+      <!-- Feature Importance Chart -->
+      <div class="lime-plot-container">
+        <h4>Feature Contributions to Prediction</h4>
+        <img id="limeFeaturePlot" class="lime-plot" alt="LIME Feature Plot" />
+      </div>
+      
+      <!-- Feature Importance Table -->
+      <div class="lime-plot-container">
+        <h4>Top Contributing Features</h4>
+        <div id="featureImportance" class="feature-importance-list"></div>
+      </div>
+    </div>
+    
+    <div id="limeError" class="lime-error" style="display:none;">
+      ⚠️ Unable to generate explanations. Please try again.
+    </div>
+  </div>
+
+  <!-- AI-Generated Report Section -->
+  <div class="section-card report-section">
+    <h3 style="text-align: center; color: #60a5fa; margin-bottom: 15px;">🤖 AI-Generated Medical Report</h3>
+    <p style="color: #94a3b8; text-align: center; margin-bottom: 20px; font-size: 0.95rem;">
+      Get a comprehensive, patient-friendly explanation of your results powered by artificial intelligence
+    </p>
+    
+    <div style="text-align: center;">
+      <button class="report-btn" id="generateReportBtn" onclick="generateFullReport()">
+        <span class="report-icon">📄</span>
+        <span>Generate Comprehensive Report</span>
+      </button>
+    </div>
+    
+    <div id="reportLoading" class="report-loading" style="display:none;">
+      <div class="loader"></div>
+      <p>AI is analyzing your results... This may take 10-30 seconds</p>
+    </div>
+    
+    <div id="fullReportSection" class="report-content" style="display:none;"></div>
+    
+    <div id="reportError" class="report-error" style="display:none;">
+      ⚠️ Unable to generate report. Please check your internet connection and try again.
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h3>🔍 Model Explanation (LIME Analysis)</h3>
+    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
+      Understanding how each feature contributed to the prediction using Local Interpretable Model-agnostic Explanations
+    </p>
+    
+    <div id="limeLoading" class="lime-loading">
+      <div class="loader"></div>
+      <p>Generating AI explanations...</p>
+    </div>
+    
+    <div id="limeContent" style="display:none;">
+      <!-- Probability Chart -->
+      <div class="lime-plot-container">
+        <h4>Prediction Confidence Across Classes</h4>
+        <img id="limeProbabilityChart" class="lime-plot" alt="LIME Probability Chart" />
+      </div>
+      
+      <!-- Feature Importance Chart -->
+      <div class="lime-plot-container">
+        <h4>Feature Contributions to Prediction</h4>
+        <img id="limeFeaturePlot" class="lime-plot" alt="LIME Feature Plot" />
+      </div>
+      
+      <!-- Feature Importance Table -->
+      <div class="lime-plot-container">
+        <h4>Top Contributing Features</h4>
+        <div id="featureImportance" class="feature-importance-list"></div>
+      </div>
+    </div>
+    
+    <div id="limeError" class="lime-error" style="display:none;">
+      ⚠️ Unable to generate explanations. Please try again.
+    </div>
   </div>
 
   <div class="section-card">

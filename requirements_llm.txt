@@ -1,0 +1,13 @@
+# Core dependencies (already installed)
+flask
+pandas
+numpy
+scikit-learn
+joblib
+matplotlib
+imbalanced-learn
+lime
+
+# New dependencies for LLM integration
+openai>=1.0.0
+python-dotenv
