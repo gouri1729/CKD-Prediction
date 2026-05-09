@@ -1,6 +1,4 @@
-# =====================================
-# 1️⃣ Import Libraries
-# =====================================
+# Import Libraries
 
 import pandas as pd
 import numpy as np
@@ -19,20 +17,14 @@ from imblearn.pipeline import Pipeline
 import shap
 import matplotlib.pyplot as plt
 
-
-# =====================================
-# 2️⃣ Data Loading Function
-# =====================================
+#Data Loading Function
 
 def load_data(file_path):
     df = pd.read_excel(file_path)
     df.columns = df.columns.str.strip()
     return df
 
-
-# =====================================
-# 3️⃣ Preprocessing Function
-# =====================================
+#Preprocessing Function
 
 def preprocess_data(df):
 
@@ -82,10 +74,7 @@ def preprocess_data(df):
 
     return df
 
-
-# =====================================
-# 4️⃣ Load Dataset
-# =====================================
+# Load Dataset
 
 df = load_data("../data/CKD_MODIFIED.xlsx")
 df = preprocess_data(df)
@@ -97,9 +86,7 @@ print("\nTarget Distribution:")
 print(df[target_column].value_counts())
 
 
-# =====================================
-# 5️⃣ Separate Features
-# =====================================
+#Separate Features
 
 X = df.drop(target_column, axis=1)
 y = df[target_column]
@@ -108,9 +95,7 @@ ALL_FEATURES = X.columns.tolist()
 print(f"\nTotal Features: {len(ALL_FEATURES)}")
 
 
-# =====================================
-# 6️⃣ Train / Validation / Test Split
-# =====================================
+#Train / Validation / Test Split
 
 X_temp, X_test, y_temp, y_test = train_test_split(
     X, y, test_size=0.2, stratify=y, random_state=42
@@ -126,9 +111,7 @@ print("Validation:", len(X_val))
 print("Testing   :", len(X_test))
 
 
-# =====================================
-# 7️⃣ Build Model Pipeline (ALL features)
-# =====================================
+#Build Model Pipeline (ALL features)
 
 model = Pipeline([
     ('imputer', SimpleImputer(strategy='median')),
@@ -142,17 +125,13 @@ model = Pipeline([
 ])
 
 
-# =====================================
-# 8️⃣ Train Model
-# =====================================
+# Train Model
 
 print("\nTraining Model...")
 model.fit(X_train, y_train)
 
 
-# =====================================
-# 9️⃣ Validation Evaluation
-# =====================================
+# Validation Evaluation
 
 y_val_pred = model.predict(X_val)
 y_val_prob = model.predict_proba(X_val)
@@ -167,9 +146,7 @@ print("\nValidation ROC-AUC:",
       roc_auc_score(y_val, y_val_prob[:, 1]))
 
 
-# =====================================
-# 🔟 Test Evaluation
-# =====================================
+# Test Evaluation
 
 y_pred = model.predict(X_test)
 y_prob = model.predict_proba(X_test)
@@ -183,10 +160,7 @@ print(classification_report(y_test, y_pred))
 print("\nTest ROC-AUC:",
       roc_auc_score(y_test, y_prob[:, 1]))
 
-
-# =====================================
-# 1️⃣1️⃣ Save Model + Metadata
-# =====================================
+# Save Model + Metadata
 
 feature_medians = {col: float(X[col].median()) for col in ALL_FEATURES}
 
@@ -205,9 +179,8 @@ print("\nModel saved → ckd_model.pkl")
 print("Metadata saved → model_metadata.json")
 
 
-# =====================================
-# 1️⃣2️⃣ SHAP Explainability (All Features)
-# =====================================
+#SHAP Explainability (All Features)
+
 
 print("\nRunning SHAP Explainability...")
 
@@ -231,7 +204,7 @@ if len(explanation.values.shape) == 3:
 else:
     explanation_class1 = explanation
 
-# ── Beeswarm Plot ──────────────────────────────────────────
+#Beeswarm Plot 
 plt.figure(figsize=(16, 12))
 shap.plots.beeswarm(explanation_class1, max_display=20, show=False)
 plt.title("SHAP Beeswarm Plot – Top 20 Features", fontsize=14, pad=15)
@@ -240,11 +213,11 @@ plt.savefig("shap_beeswarm.png", dpi=150, bbox_inches="tight")
 plt.show()
 print("Saved → shap_beeswarm.png")
 
-# ── Bar Plot ───────────────────────────────────────────────
+#Bar Plot 
 plt.figure(figsize=(16, 12))
 shap.plots.bar(explanation_class1, max_display=20, show=False)
 plt.title("SHAP Feature Importance – Top 20 Features", fontsize=14, pad=15)
 plt.tight_layout()
 plt.savefig("shap_bar.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("Saved → shap_bar.png")
+print("Saved to shap_bar.png")
