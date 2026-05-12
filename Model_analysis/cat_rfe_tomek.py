@@ -1,15 +1,13 @@
+# Import Libraries
+
 import pandas as pd
 import numpy as np
-import joblib
-import json
 
 from sklearn.model_selection import (
     train_test_split,
     StratifiedKFold,
     cross_validate
 )
-
-from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.metrics import (
     classification_report,
@@ -19,9 +17,10 @@ from sklearn.metrics import (
 
 from sklearn.feature_selection import RFE
 
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import ClusterCentroids
+from imblearn.combine import SMOTETomek
 from imblearn.pipeline import Pipeline
+
+from catboost import CatBoostClassifier
 
 
 # Data Loading Function
@@ -149,20 +148,20 @@ def preprocess_data(df):
         if col in df.columns:
             df[col] = df[col].map(mapping)
 
-    # Manual Encoding for Nominal Column
+    # One Hot Encoding
 
-    smoking_mapping = {
+    nominal_cols = ['Smoking status']
 
-        'no': 0,
+    existing_nominal = [
+        c for c in nominal_cols
+        if c in df.columns
+    ]
 
-        'yes': 1
-    }
-
-    if 'Smoking status' in df.columns:
-
-        df['Smoking status'] = df[
-            'Smoking status'
-        ].map(smoking_mapping)
+    df = pd.get_dummies(
+        df,
+        columns=existing_nominal,
+        drop_first=True
+    )
 
     return df
 
@@ -178,7 +177,6 @@ target_column = "Target"
 print("Dataset Shape:", df.shape)
 
 print("\nTarget Distribution:")
-
 print(df[target_column].value_counts())
 
 
@@ -228,16 +226,24 @@ print("Testing:", len(X_test))
 
 # Feature Selection using RFE
 
+catboost_rfe = CatBoostClassifier(
+
+    iterations=100,
+
+    depth=6,
+
+    learning_rate=0.1,
+
+    verbose=0,
+
+    random_state=42
+)
+
 rfe = RFE(
 
-    estimator=RandomForestClassifier(
+    estimator=catboost_rfe,
 
-        n_estimators=100,
-
-        random_state=42
-    ),
-
-    n_features_to_select=10
+    n_features_to_select=20
 )
 
 
@@ -247,23 +253,26 @@ model = Pipeline([
 
     ('feature_selection', rfe),
 
-    ('smote', SMOTE(
+    ('smote_tomek', SMOTETomek(
 
-        sampling_strategy='auto',
-
-        random_state=42
-    )),
-
-    ('cluster', ClusterCentroids(
+        sampling_strategy=0.8,
 
         random_state=42
     )),
 
-    ('rf', RandomForestClassifier(
+    ('catboost', CatBoostClassifier(
 
-        n_estimators=300,
+        iterations=300,
 
-        max_depth=10,
+        depth=6,
+
+        learning_rate=0.05,
+
+        loss_function='Logloss',
+
+        eval_metric='AUC',
+
+        verbose=0,
 
         random_state=42
     ))
@@ -334,23 +343,6 @@ print("ROC AUC:",
 model.fit(X_train, y_train)
 
 
-# Selected Features
-
-selector = model.named_steps['feature_selection']
-
-feature_names = X.columns
-
-selected_features = feature_names[
-    selector.support_
-]
-
-print("\nSelected Features by RFE:")
-
-for i, f in enumerate(selected_features, 1):
-
-    print(i, f)
-
-
 # Validation Evaluation
 
 y_val_pred = model.predict(X_val)
@@ -392,39 +384,36 @@ print("\nTest ROC-AUC Score:")
 print(roc_auc_score(y_test, y_prob))
 
 
-# Save Model + Metadata
+# Selected Features from RFE
 
-feature_medians = {
+feature_names = X.columns
 
-    col: float(X[col].median())
+rfe_mask = model.named_steps[
+    'feature_selection'
+].support_
 
-    for col in X.columns
-}
+selected_features = feature_names[rfe_mask]
 
-reverse_label_mapping = {
+print("\nSelected Features by RFE:")
 
-    0: "No Disease",
+for f in selected_features:
+    print(f)
 
-    1: "CKD/Risk"
-}
 
-metadata = {
+# Feature Ranking
 
-    "features": list(X.columns),
+ranking = model.named_steps[
+    'feature_selection'
+].ranking_
 
-    "feature_medians": feature_medians,
+feature_ranking = pd.DataFrame({
 
-    "reverse_label_mapping": reverse_label_mapping,
+    "Feature": feature_names,
 
-    "num_classes": 2
-}
+    "Rank": ranking
 
-with open("model_metadata.json", "w") as f:
+}).sort_values(by="Rank")
 
-    json.dump(metadata, f, indent=2)
+print("\nFeature Ranking (RFE):")
 
-joblib.dump(model, "ckd_model.pkl")
-
-print("\nModel saved → ckd_model.pkl")
-
-print("Metadata saved → model_metadata.json")
+print(feature_ranking)

@@ -17,12 +17,13 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline as SkPipeline
 
+from catboost import CatBoostClassifier
+from imblearn.over_sampling import SMOTE
 
-from sklearn.ensemble import RandomForestClassifier
+from imblearn.under_sampling import ClusterCentroids
 from sklearn.feature_selection import RFE
 
 
-from imblearn.combine import SMOTETomek
 from imblearn.pipeline import Pipeline
 
 
@@ -292,41 +293,56 @@ print("Testing:", len(X_test))
 
 
 rfe = RFE(
-    estimator=RandomForestClassifier(n_estimators=100, random_state=42),
-    n_features_to_select=20
+    estimator=CatBoostClassifier(
+        iterations=100,
+        depth=6,
+        learning_rate=0.1,
+        verbose=0,
+        random_state=42
+    ),
+    n_features_to_select=15
 )
-
-
 
 
 # =====================================
 # 9️⃣ Full Pipeline
 # =====================================
 
-
 model = Pipeline([
-
 
     ('preprocessing', preprocessor),
 
-
     ('feature_selection', rfe),
 
-
-    ('smote_tomek', SMOTETomek(
+    # SMOTE Oversampling
+    ('smote', SMOTE(
         sampling_strategy=0.8,
         random_state=42
     )),
 
+    # Cluster-Based Undersampling (CBU)
+    ('cbu', ClusterCentroids(
+        random_state=42
+    )),
 
-    ('rf', RandomForestClassifier(
-        n_estimators=300,
-        max_depth=12,
+    # Final CatBoost Classifier
+    ('catboost', CatBoostClassifier(
+
+        iterations=300,
+
+        depth=6,
+
+        learning_rate=0.05,
+
+        loss_function='Logloss',
+
+        eval_metric='AUC',
+
+        verbose=0,
+
         random_state=42
     ))
 ])
-
-
 
 
 # =====================================
