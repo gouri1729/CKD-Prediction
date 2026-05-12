@@ -16,7 +16,8 @@ def build_pipeline(
     model,
     rfe_features=10,
     imbalance_strategy="cluster",
-    random_state=42
+    random_state=42,
+    tomek_sampling_strategy=0.8
 ):
     rfe = RFE(
         estimator=RandomForestClassifier(
@@ -30,7 +31,7 @@ def build_pipeline(
         pipeline_steps = [
             ("feature_selection", rfe),
             ("smote_tomek", SMOTETomek(
-                sampling_strategy=0.8,
+                sampling_strategy=tomek_sampling_strategy,
                 random_state=random_state
             )),
             ("model", model)

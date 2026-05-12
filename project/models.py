@@ -10,8 +10,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
 
-
-
 # RANDOM FOREST
 
 def get_rf_baseline():
@@ -33,21 +31,21 @@ def get_rf_class_weighted():
 
 # SVM
 
-def get_svm_baseline():
-    return SVC(
-        kernel="rbf",
-        probability=True,
-        random_state=42
-    )
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
+def get_svm_baseline():
+    return Pipeline([
+        ("scaler", StandardScaler()),
+        ("svm", SVC(kernel="rbf", probability=True, random_state=42))
+    ])
 
 def get_svm_class_weighted():
-    return SVC(
-        kernel="rbf",
-        class_weight="balanced",
-        probability=True,
-        random_state=42
-    )
+    return Pipeline([
+        ("scaler", StandardScaler()),
+        ("svm", SVC(kernel="rbf", class_weight="balanced", probability=True, random_state=42))
+    ])
+
 
 
 # LOGISTIC REGRESSION
